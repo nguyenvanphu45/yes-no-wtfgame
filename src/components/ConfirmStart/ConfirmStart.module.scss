@@ -1,0 +1,50 @@
+@use '../../scss/' as *;
+
+.container {
+    min-width: 500px;
+
+    .table {
+        margin-bottom: 100px;
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .title {
+            th {
+                font-size: 20px;
+                font-weight: $weight-bold;
+            }
+        }
+
+        td, th {
+            min-width: 250px;
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 8px;
+        }
+    
+        .number {
+            position: relative;
+    
+            .icon {
+                position: absolute;
+                top: 50%;
+                right: 10px;
+                transform: translateY(-50%);
+                font-size: 26px;
+                cursor: pointer;
+    
+                &:hover {
+                    opacity: .6;
+                }
+            }
+        }
+    
+        button {
+            width: 100%;
+        }
+    }
+}
