@@ -1,30 +1,24 @@
 import React, { useState } from 'react';
 import styles from './AddPlayer.module.scss';
 import classNames from 'classnames/bind';
-import { useDispatch } from 'react-redux';
-import { addPlayer } from '../../redux/actions';
 import { v4 as uuidv4 } from 'uuid';
 
 const cx = classNames.bind(styles);
 
-function AddPlayer({ setPlayers, onClose }) {
+function AddPlayer({ onClose, players, setPlayers }) {
     const [name, setName] = useState('');
-
-    const dispatch = useDispatch();
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!name) return;
         else {
-            dispatch(
-                addPlayer({
-                    id: uuidv4(),
-                    name: name,
-                    result: [],
-                    createdAt: new Date(),
-                }),
-            );
-            setPlayers(JSON.parse(localStorage.getItem('reduxState')));
+            const addPlayer = {
+                id: uuidv4(),
+                name: name,
+                result: [],
+                createdAt: new Date(),
+            };
+            setPlayers([...players, addPlayer]);
             setName('');
             onClose();
         }

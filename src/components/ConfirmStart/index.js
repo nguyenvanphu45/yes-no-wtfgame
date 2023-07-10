@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './ConfirmStart.module.scss';
 import classNames from 'classnames/bind';
 import { BsFillTrashFill } from 'react-icons/bs';
 import TotalRound from '../TotalRound';
-import { useDispatch } from 'react-redux';
-import { removePlayer } from '../../redux/actions';
 
 const cx = classNames.bind(styles);
 
 function ConfirmStart({ players, setPlayers, onOpen }) {
-    const dispatch = useDispatch();
 
     const handleRemove = (e, player) => {
         e.preventDefault();
-        dispatch(removePlayer({ id: player }));
-        setPlayers(JSON.parse(localStorage.getItem('reduxState')));
+        const removeItem = players.filter(item => item.id !== player);
+        setPlayers(removeItem)
     };
 
     return (

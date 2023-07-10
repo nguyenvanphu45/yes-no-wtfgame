@@ -1,0 +1,85 @@
+@use '../../scss/' as *;
+
+.container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 50px 0;
+
+    .item {
+    
+        h3 {
+            font-size: 20px;
+            font-weight: $weight-bold;
+            margin-bottom: 16px;
+        }
+
+        button {
+            min-width: 250px;
+            padding: 16px 20px;
+            text-transform: uppercase;
+            text-align: left;
+            border-radius: 0;
+            cursor: default;
+            gap: 6px;
+            background-color: $button-color-2;
+            color: $dark-txt-color;
+            font-size: 14px;
+
+            p {
+                &:first-child {
+                    padding-bottom: 10px;
+                }
+
+                span {
+                    font-weight: $weight-bold;
+                }
+            }
+        }
+    }
+}
+
+.btn-submit {
+    margin: 100px auto 0;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;    
+    padding: 20px 0;
+    background-color: $button-color-2;
+    color: $dark-txt-color;
+    border-radius: 4px;
+    font-size: 26px;
+    font-weight: $weight-bold;
+
+    span {
+        width: 100%;
+    }
+    
+    svg {
+        animation: loading .5s linear infinite;
+    }
+}
+
+@keyframes loading {
+    0% {
+        transform: rotate(0);
+    }
+
+    50% {
+        transform: rotate(180deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.summary {
+    background-color: green;
+    color: $white-txt-color;
+}
+
+.player-winner {
+    color: green;
+}

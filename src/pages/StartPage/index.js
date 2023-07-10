@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { useSelector } from 'react-redux';
 import AddPlayer from '../../components/AddPlayer';
 import ConfirmStart from '../../components/ConfirmStart';
-import { playersRemainingSelector } from '../../redux/selectors';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 const customStyles = {
     content: {
@@ -25,13 +24,11 @@ const customStyles = {
 function StartPage() {
     const [isOpen, setIsOpen] = useState(false);
 
-    const [players, setPlayers] = useState(JSON.parse(localStorage.getItem('reduxState')));
-
-    console.log(players);
+    const [players, setPlayers] = useLocalStorage('players', []);
 
     const openModal = () => {
-        setIsOpen(true)
-    }
+        setIsOpen(true);
+    };
 
     const closeModal = () => {
         setIsOpen(false);
@@ -45,7 +42,7 @@ function StartPage() {
                 <ConfirmStart players={players} setPlayers={setPlayers} onOpen={openModal} />
             )}
             <Modal isOpen={isOpen} onRequestClose={closeModal} style={customStyles} ariaHideApp={false}>
-                <AddPlayer setPlayers={setPlayers} onClose={closeModal} />
+                <AddPlayer onClose={closeModal} players={players} setPlayers={setPlayers} />
             </Modal>
         </>
     );

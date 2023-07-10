@@ -1,27 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import styles from './GridRound.module.scss';
+import React, { useState } from 'react';
+import styles from './QuestionGrid.module.scss';
 import classNames from 'classnames/bind';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { FaXmark } from 'react-icons/fa6';
-import FetchAnswer from '../../utils/FetchAnswer';
 
 const cx = classNames.bind(styles);
 
-function GridRound({ round, players }) {
-    const [isAnswer, setIsAnswer] = useState([]);
+function QuestionGrid({ round, answers, setAnswers, currentPlayer, onClickNext }) {
     const [selectedButton, setSelectedButton] = useState(Array(round).fill(null));
-    const [isLoading, setIsLoading] = useState(false);
 
-    const handleAnswer = () => {
-        FetchAnswer(setIsAnswer);
-    };
-
-    useEffect(() => {
-        FetchAnswer(setIsAnswer);
-    }, [isAnswer]);
+    const convert = selectedButton.map(val => val === 0 ? 'yes' : 'no')
 
     const handleClick = (index, buttonIndex) => {
         setSelectedButton((prev) => prev.map((selectedButton, idx) => (idx === index ? buttonIndex : selectedButton)));
+    };
+
+    const handleAnswer = () => {
+        if (selectedButton.some((element) => element === null)) {
+            return;
+        } else {
+            const addAnswer = { id: currentPlayer.id, answer: convert };
+            setAnswers([...answers, addAnswer]);
+            onClickNext();
+            setSelectedButton(Array(round).fill(null));
+        }
     };
 
     return (
@@ -58,4 +60,4 @@ function GridRound({ round, players }) {
     );
 }
 
-export default GridRound;
+export default QuestionGrid;

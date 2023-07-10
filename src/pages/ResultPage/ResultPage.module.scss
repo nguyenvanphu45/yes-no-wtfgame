@@ -1,0 +1,78 @@
+@use '../../scss/' as *;
+
+.container {
+    margin: 0 40px;
+
+    p, button {
+        width: 14%;
+        margin: 0 auto 20px;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 24px;
+        color: $white-txt-color;
+    }
+
+    .tilte {
+        background-color: $button-color;
+    }
+
+    .search {
+        width: 20%;
+        padding: 5px 10px;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+        
+    .title {
+        th {
+            font-size: 20px;
+            font-weight: $weight-bold;
+        }
+
+        .icon {
+            gap: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+        
+    td,
+    th {
+        min-width: 100px;
+        border: 1px solid #dddddd;
+        text-align: center;
+        padding: 8px;
+    }
+
+    .table-right {
+        width: 46.3%;
+        margin: 0 0 30px auto;
+
+        th {
+            width: calc(47% / 3);
+        }
+    }
+
+    h3 {
+        text-align: center;
+        font-size: 40px;
+        margin-bottom: 20px;
+        color: green;
+    }
+
+    .winner {
+        color: red;
+    }
+
+    .footer {
+        background-color: #474747;
+        border-radius: 0;
+        display: flex;
+        justify-content: center;
+    }
+}
