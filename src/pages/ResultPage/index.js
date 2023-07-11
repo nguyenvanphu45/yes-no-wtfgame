@@ -2,33 +2,104 @@ import React, { useState } from 'react';
 import styles from './ResultPage.module.scss';
 import classNames from 'classnames/bind';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { TiArrowUnsorted } from 'react-icons/ti';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/formatDate';
 import { calculatePercentage } from '../../utils/calculatePercentage';
+import { DataGrid } from '@mui/x-data-grid';
 
 const cx = classNames.bind(styles);
+
+const PLAYERS = [
+    { field: 'id', headerName: `No.`, width: 168 },
+    { field: 'name', headerName: 'Player', width: 168 },
+    { field: 'createdAt', headerName: 'Date', width: 245 },
+    { field: 'answer', headerName: 'Answer', width: 168 },
+    { field: 'result', headerName: 'Result', width: 168 },
+    { field: 'score', headerName: 'Score', width: 168 },
+];
+const WINNER_PLAYERS = [
+    { field: 'name', headerName: 'Summary', width: 168 },
+    { field: 'correct', headerName: 'Correct percent', width: 168 },
+    { field: 'total', headerName: 'Total score', width: 168 },
+];
 
 function ResultPage() {
     const [players] = useLocalStorage('players', []);
     const [answers] = useLocalStorage('answers', []);
     const [search, setSearch] = useState('');
     const { state } = useLocation();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [rows, setRows] = useState(players);
+    const percentageCorrect = calculatePercentage(state.compareApi, players);
 
     const handleSearch = (e) => {
         setSearch(e.target.value);
     };
 
-    const searchResults = players.filter((player) => {
-        return player.name.toLowerCase().includes(search);
-    });
-
-    const percentageCorrect = calculatePercentage(state.compareApi, players);
+    const searchResults = rows
+        .filter((row) => {
+            return row.name.toLowerCase().includes(search);
+        })
+        .map((row, index) => {
+            const answer = answers[index].answer;
+            const result = state.results;
+            const score = answer.reduce((acc, currentValue, index) => {
+                if (currentValue === result[index]) {
+                    return acc + 1
+                } else {
+                    return acc
+                }
+            }, 0);
+            return {
+                id: index,
+                name: row.name,
+                createdAt: formatDate(row.createAt, 'L, LT'),
+                answer: answer.join(', '),
+                result: result.join(', '),
+                score: score,
+                correct: `${percentageCorrect[row.name]} %`,
+                total: `${percentageCorrect[row.name] >= 50 ? '1' : '0'}`,
+            };
+        });
 
     const handleEnd = () => {
-        localStorage.clear()
+        localStorage.clear();
         navigate('/');
+    };
+
+    const [sortPlayer, setSortPlayer] = useState([
+        {
+            field: 'id',
+            sort: 'asc',
+        },
+        {
+            field: 'name',
+            sort: 'asc',
+        },
+        {
+            field: 'createdAt',
+            sort: 'asc',
+        },
+        {
+            field: 'score',
+            sort: 'asc',
+        },
+    ]);
+
+    const [sortWinner, setSortWinner] = useState([
+        {
+            field: 'correct',
+            sort: 'asc',
+        },
+        {
+            field: 'total',
+            sort: 'asc',
+        },
+    ]);
+
+    function CustomUnsortedIcon() {
+        return <UnfoldMoreIcon />;
     }
 
     return (
@@ -40,93 +111,54 @@ function ResultPage() {
                 onChange={handleSearch}
                 placeholder="Search by player name"
             />
-            <table>
-                <thead className={cx('title')}>
-                    <tr>
-                        <th>
-                            <span className={cx('icon')}>
-                                No. <TiArrowUnsorted />
-                            </span>
-                        </th>
-                        <th>
-                            <span className={cx('icon')}>
-                                Player <TiArrowUnsorted />
-                            </span>
-                        </th>
-                        <th colSpan="2">
-                            <span className={cx('icon')}>
-                                Date <TiArrowUnsorted />
-                            </span>
-                        </th>
-                        <th>Answer</th>
-                        <th>Result</th>
-                        <th>
-                            <span className={cx('icon')}>
-                                Score <TiArrowUnsorted />
-                            </span>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {searchResults.map((player, index) => {
-                        const answer = answers[index].answer[0];
-                        const result = state.results[0];
+            <div className={cx('grid-player')}>
+                <DataGrid
+                    columns={PLAYERS}
+                    rows={searchResults}
+                    sortModel={sortPlayer}
+                    onSortModelChange={(player) => setSortPlayer(player)}
+                    hideFooterPagination
+                    hideFooterSelectedRowCount
+                    components={{
+                        ColumnSortedAscendingIcon: CustomUnsortedIcon,
+                        ColumnSortedDescendingIcon: CustomUnsortedIcon,
+                    }}
+                    className={cx('data-grid')}
+                />
+            </div>
+            <div className={cx('grid-winner')}>
+                <DataGrid
+                    columns={WINNER_PLAYERS}
+                    rows={searchResults}
+                    sortModel={sortWinner}
+                    onSortModelChange={(winner) => setSortWinner(winner)}
+                    hideFooterPagination
+                    hideFooterSelectedRowCount
+                    components={{
+                        ColumnSortedAscendingIcon: CustomUnsortedIcon,
+                        ColumnSortedDescendingIcon: CustomUnsortedIcon,
+                    }}
+                    className={cx('data-grid')}
+                />
+            </div>
+
+            <div className={cx('hide-player')}>
+                <h3>
+                    The winner is{' '}
+                    {Object.entries(percentageCorrect).map(([player, percentage], index) => {
                         return (
-                            <tr key={player.id}>
-                                <td className={cx('number')}>{index + 1}</td>
-                                <td>{player.name}</td>
-                                <td colSpan="2">{formatDate(player.createAt, 'L, LT')}</td>
-                                <td>{answer}</td>
-                                <td>{result}</td>
-                                <td>{answer === result ? 1 : 0}</td>
-                            </tr>
+                            Number(percentage) >= 50 && (
+                                <span key={player} className={cx(player === players[0].name && 'winner')}>
+                                    {player} {players[index.length] ? ', ' : ' '}
+                                </span>
+                            )
                         );
                     })}
-                </tbody>
-            </table>
-            {!searchResults.length ? (
-                ''
-            ) : (
-                <table className={cx('table-right')}>
-                    <thead className={cx('title')}>
-                        <tr>
-                            <th>Summary</th>
-                            <th>
-                                <span className={cx('icon')}>
-                                    Correct percent <TiArrowUnsorted />
-                                </span>
-                            </th>
-                            <th>
-                                <span className={cx('icon')}>
-                                    Total score <TiArrowUnsorted />
-                                </span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {searchResults.map((result) => {
-                            return (
-                                <tr key={result.id}>
-                                    <td className={cx('number')}>{result.name}</td>
-                                    <td>{percentageCorrect[result.name]}%</td>
-                                    <td>{percentageCorrect[result.name] > 50 ? '1' : '0'}</td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            )}
-
-            {Object.entries(percentageCorrect).map(([player, percentage]) => {
-                return (
-                    Number(percentage) > 50 && (
-                        <h3 key={player} className={cx(player === players[0].name && 'winner')}>
-                            The winner is {player}
-                        </h3>
-                    )
-                );
-            })}
-            <button className={cx('footer')} onClick={handleEnd}>End Game</button>
+                </h3>
+            </div>
+            <button className={cx('footer')} onClick={handleEnd}>
+                End Game
+            </button>
         </div>
     );
 }

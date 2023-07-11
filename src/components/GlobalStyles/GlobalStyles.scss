@@ -61,3 +61,41 @@ textarea {
     margin: 0 auto;
     text-align: center;
 }
+
+// Config css MUI
+
+.MuiDataGrid-columnHeaderTitleContainer {
+    align-items: center;
+}
+
+.MuiDataGrid-columnHeaderTitle {
+    text-align: center;
+    width: 100%;
+    font-size: 22px;
+}
+
+.MuiDataGrid-cellContent {
+    font-size: 18px;
+}
+
+.MuiDataGrid-columnHeader .MuiDataGrid-iconButtonContainer {
+    visibility: visible !important;
+    width: auto !important;
+}
+
+.MuiDataGrid-menuIcon {
+    display: none !important;
+}
+
+.css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root {
+    margin: auto 10px !important;
+    color: $dark-txt-color !important;
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar {
+    display: none;
+}
+
+.css-wop1k0-MuiDataGrid-footerContainer {
+    display: none !important;
+}

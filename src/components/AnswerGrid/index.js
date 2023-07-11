@@ -55,7 +55,6 @@ function AnwerGrid({ round, answers, players }) {
     }, [compareApi]);
 
     const getPlayerWinner = correctIds.map((id, index) => {
-        console.log(index);
         return (
             <p key={index}>
                 Winner: <span>{getPlayerNameById(id.toString(), players)}</span>

@@ -41,7 +41,7 @@ function ConfirmStart({ players, setPlayers, onOpen }) {
                         })}
                     </tbody>
                 </table>
-                <button onClick={onOpen}>Add More Player</button>
+                <button disabled={players.length >= 2 && true} onClick={onOpen}>Add More Player</button>
             </div>
             <TotalRound />
         </div>
